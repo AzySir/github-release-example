@@ -1,0 +1,37 @@
+---
+name: Pre-Release Workflow
+on:
+  release:
+    types: [published]
+
+jobs:
+  release-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debugging
+        run: |
+          echo "Pre-Release Started."
+      - name: Debugging Event
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('node:fs');
+            const event = ${{ toJSON(github.event.release) }}
+              const {
+                body,
+                tag_name,
+                name,
+                created_at,
+                published_at,
+                author: { login },
+              } = event;
+            fs.writeFile('metadata.json', content, err => {
+              if (err) {
+                console.error(err);
+              } else {
+                console.log("Written metadata successfully to JSON")
+              }
+            });
+      - name: Debug metadata
+        run: |
+          cat metadata.json

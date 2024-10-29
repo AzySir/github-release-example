@@ -2,6 +2,7 @@
 name: Release Workflow
 on:
   release:
+    - released
 
 jobs:
   release-job:

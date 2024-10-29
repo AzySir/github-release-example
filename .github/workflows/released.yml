@@ -12,5 +12,8 @@ jobs:
         run: |
           echo Release in Progress
       - name: Debugging Event
-        run: |
-          echo ${{ toJSON(github.event.release) }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const event = ${{ toJSON(github.event.release) }}
+            console.log(JSON.stringify(event, null, 2))

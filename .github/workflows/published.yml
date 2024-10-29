@@ -2,7 +2,7 @@
 name: Pre-Release Workflow
 on:
   release:
-    types: [published]
+    types: [published, edited]
 
 jobs:
   release-job:

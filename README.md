@@ -1,2 +1,1 @@
-# github-release-example
-# github-release-example
+# Github Actions Release Example

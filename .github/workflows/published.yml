@@ -33,7 +33,7 @@ jobs:
               published_at,
               author: { login },
             }
-            fs.writeFile('metadata.json', content, err => {
+            fs.writeFile('metadata.json', JSON.stringify(content, null, 2), err => {
               if (err) {
                 console.error(err);
               } else {

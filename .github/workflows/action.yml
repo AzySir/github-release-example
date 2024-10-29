@@ -13,4 +13,4 @@ jobs:
           echo Release in Progress
       - name: Debugging Event
         run: |
-          echo ${{ github.event.release }}
+          echo ${{ toJSON(github.event.release) }}

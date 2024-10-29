@@ -2,6 +2,7 @@
 name: Release Workflow
 on:
   release:
+    - released
   workflow_dispatch:
 
 jobs:

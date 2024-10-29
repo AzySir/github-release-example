@@ -1,0 +1,16 @@
+---
+name: Release Workflow
+on:
+  release:
+  workflow_dispatch:
+
+jobs:
+  release-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debugging
+        run: |
+          echo Release in Progress
+      - name: Debugging Event
+        run: |
+          echo ${{ github.event.release }}

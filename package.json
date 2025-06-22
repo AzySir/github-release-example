@@ -1,15 +1,19 @@
 {
   "name": "github-release-example",
   "version": "2.3.46",
+  "type": "module",
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest run"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "jest": "^29.7.0"
+  },
+  "devDependencies": {
+    "vitest": "^2.1.4"
   }
 }

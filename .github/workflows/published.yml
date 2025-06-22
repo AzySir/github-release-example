@@ -28,6 +28,7 @@ jobs:
             const content = {
               body,
               tag_name,
+              version: tag_name,
               name,
               created_at,
               published_at,

@@ -11,9 +11,66 @@ jobs:
       - name: Debugging
         run: |
           echo Release in Progress
-      - name: Debugging Event
+      - name: Create Metadata
+        id: metadata
         uses: actions/github-script@v6
         with:
           script: |
+            const fs = require('node:fs');
             const event = ${{ toJSON(github.event.release) }}
-            console.log(JSON.stringify(event, null, 2))
+            const {
+              body,
+              tag_name,
+              name,
+              created_at,
+              published_at,
+              author: { login },
+            } = event;
+            const content = {
+              body,
+              tag_name,
+              version: tag_name,
+              name,
+              created_at,
+              published_at,
+              author: { login },
+            }
+            fs.writeFile('metadata.json', JSON.stringify(content, null, 2), err => {
+              if (err) {
+                console.error(err);
+              } else {
+                console.log("Written metadata successfully to JSON")
+              }
+            });
+            core.setOutput("TAG", tag_name)
+      - name: Git Clone
+        uses: actions/github-script@v6
+        with:
+          scripts: |
+            console.log("Created Metadata")
+      - name: npm version
+        uses: actions/github-script@v6
+        with:
+          scripts: |
+            npm version ${{ steps.metadata.TAG }}
+      - name: Zip App Code (with tag name)
+        uses: actions/github-script@v6
+        with:
+          scripts: |
+            console.log("Created Metadata")
+      - name: AWS Auth
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: S3 Upload Zip and Metadata
+        run: |
+          console.log("Created Metadata")
+          aws s3 rm s3://${{inputs.BUCKET_NAME}}/dev/latest/${{ inputs.ARTIFACT_NAME }}.zip
+          aws s3 cp s3://${{inputs.BUCKET_NAME}}/dev/latest/metadata.json s3://${{inputs.BUCKET_NAME}}/dev/latest/rollback_metadata.json
+          aws s3 rm s3://${{inputs.BUCKET_NAME}}/dev/latest/metadata.json
+      - name: Copy Artifact to Latest
+        run: |
+          aws s3 cp s3://${{inputs.BUCKET_NAME}}/dev/${{ steps.metadata.TAG }}/${{ inputs.ARTIFACT_NAME }}_${{ inputs.TAG_NAME }}.zip s3://${{inputs.BUCKET_NAME}}/dev/latest/${{ inputs.ARTIFACT_NAME }}.zip
+          aws s3 cp metadata.json s3://${{inputs.BUCKET_NAME}}/dev/latest/metadata.json
